@@ -1,68 +1,58 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
+@layer base {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --background: 298 67% 93%;
+    --foreground: 296 71% 8%;
+    --card: 298 67% 93%;
+    --card-foreground: 296 71% 8%;
+    --popover: 298 67% 93%;
+    --popover-foreground: 296 71% 8%;
+    --primary: 295 68% 26%;
+    --primary-foreground: 298 67% 93%;
+    --secondary: 331 70% 65%;
+    --secondary-foreground: 296 71% 8%;
+    --muted: 298 67% 20%;
+    --muted-foreground: 296 71% 70%;
+    --accent: 347 70% 44%;
+    --accent-foreground: 298 67% 93%;
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 296 71% 8%;
+    --border: 298 67% 20%;
+    --input: 298 67% 20%;
+    --ring: 347 70% 40%;
+    --radius: 0.5rem;
   }
-  a:hover {
-    color: #747bff;
+
+  .dark {
+    --background: 298 68% 7%;
+    --foreground: 296 71% 92%;
+    --card: 298 68% 7%;
+    --card-foreground: 296 71% 92%;
+    --popover: 298 68% 7%;
+    --popover-foreground: 296 71% 92%;
+    --primary: 295 69% 74%;
+    --primary-foreground: 298 68% 7%;
+    --secondary: 331 70% 35%;
+    --secondary-foreground: 296 71% 92%;
+    --muted: 297 69% 80%;
+    --muted-foreground: 296 71% 92%;
+    --accent: 347 70% 56%;
+    --accent-foreground: 298 68% 7%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 295 73% 10%;
+    --border: 298 68% 60%;
+    --input: 297 69% 80%;
+    --ring: 347 70% 60%;
   }
-  button {
-    background-color: #f9f9f9;
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
