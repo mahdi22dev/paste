@@ -20,7 +20,7 @@ const MobileNavbar = () => {
     setToggleNav(false);
   };
   return (
-    <div className="md:hidden py-7 flex justify-between items-center w-full h-full bg-primary p-5 ">
+    <div className="md:hidden py-7 flex justify-between items-center w-full h-full bg-primary text-primary-foreground p-5 ">
       <div>loogo</div>
       <div className="flex gap-5 justify-between items-center">
         <ModeToggle />
@@ -56,7 +56,7 @@ const MobileNavbar = () => {
 
 const DesktopNavbar = () => {
   return (
-    <div className="hidden md:flex py-7 justify-between items-center w-full h-full bg-primary p-5">
+    <div className="hidden md:flex py-7 justify-between items-center w-full h-full bg-primary text-primary-foreground p-5">
       <div>loogo</div>
       <ul className="flex justify-between items-center gap-5">
         <SingleLink path="/" name="Home" />
