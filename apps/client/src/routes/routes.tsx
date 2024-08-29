@@ -1,7 +1,9 @@
 import ErrorPage from "@/error-page";
-import { Home, About } from "../components/Pages";
+
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "@/components/layout";
+import { About, Home } from "./Pages";
+import Signin from "./Pages/signin";
 
 const routers = createBrowserRouter([
   {
@@ -27,7 +29,7 @@ const routers = createBrowserRouter([
       },
       {
         path: "/auth/signin",
-        element: <div>Sign in</div>,
+        element: <Signin />,
       },
     ],
   },

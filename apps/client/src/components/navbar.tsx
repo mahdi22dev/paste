@@ -2,11 +2,13 @@ import { memo, useState } from "react";
 import useDeviceType from "@/lib/hooks/devicetype";
 import { ModeToggle } from "./custom/mod-toggle";
 import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = memo(() => {
   const isMobile = useDeviceType();
+
   return (
-    <nav className=" h-16 w-full">
+    <nav className=" h-16 w-full font">
       {isMobile == "mobile" ? <MobileNavbar /> : <DesktopNavbar />}
     </nav>
   );
@@ -14,8 +16,11 @@ const Navbar = memo(() => {
 
 const MobileNavbar = () => {
   const [toggleNav, setToggleNav] = useState(false);
+  const handleToggle = () => {
+    setToggleNav(false);
+  };
   return (
-    <div className="md:hidden pt-7 flex justify-between items-center w-full h-full bg-popover p-5">
+    <div className="md:hidden pt-7 flex justify-between items-center w-full h-full bg-popover p-5 ">
       <div>loogo</div>
       <div className="flex gap-5 justify-between items-center">
         <ModeToggle />
@@ -28,10 +33,15 @@ const MobileNavbar = () => {
       </div>
 
       {toggleNav && (
-        <ul className="border-t-2 border-slate-500 absolute top-20 left-0 w-full bg-popover p-5 shadow-lg">
-          <li className="py-2">link 1</li>
-          <li className="py-2">link 2</li>
-          <li className="py-2">link 3</li>
+        <ul className="border-t-2 flex justify-between flex-col items-center gap-4 border-slate-500 absolute top-20 left-0 w-full bg-popover p-5 shadow-lg">
+          <SingleLink path="/" name="Home" handleToggle={handleToggle} />
+          <SingleLink path="/about" name="About" handleToggle={handleToggle} />
+          <SingleLink
+            path="/auth/signin"
+            name="Account"
+            handleToggle={handleToggle}
+          />
+
           <div
             className="mx-auto max-w-16 flex justify-center items-center bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-slate-500/15"
             onClick={() => setToggleNav(!toggleNav)}
@@ -49,9 +59,9 @@ const DesktopNavbar = () => {
     <div className="hidden md:flex pt-7 justify-between items-center w-full h-full bg-popover p-5">
       <div>loogo</div>
       <ul className="flex justify-between items-center gap-5">
-        <li>link 1</li>
-        <li>link 1</li>
-        <li>link 1</li>
+        <SingleLink path="/" name="Home" />
+        <SingleLink path="/about" name="About" />
+        <SingleLink path="/auth/signin" name="Account" />
       </ul>
       <div className="flex gap-5 justify-between items-center">
         <ModeToggle />
@@ -59,5 +69,24 @@ const DesktopNavbar = () => {
     </div>
   );
 };
+type HandleToggle = () => void;
 
+const SingleLink = ({
+  handleToggle,
+  name,
+  path,
+}: {
+  handleToggle?: HandleToggle;
+  name: string;
+  path: string;
+}) => {
+  return (
+    <li
+      onClick={handleToggle}
+      className="bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-slate-500/15"
+    >
+      <Link to={path}>{name}</Link>
+    </li>
+  );
+};
 export default Navbar;
