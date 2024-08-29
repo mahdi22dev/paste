@@ -1,5 +1,5 @@
 // src/ui/Pages/index.js
-import Home from "./Home";
-import About from "./About";
+import Home from "./home";
+import About from "./about";
 
 export { Home, About };
