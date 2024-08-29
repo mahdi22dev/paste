@@ -20,12 +20,12 @@ const MobileNavbar = () => {
     setToggleNav(false);
   };
   return (
-    <div className="md:hidden pt-7 flex justify-between items-center w-full h-full bg-popover p-5 ">
+    <div className="md:hidden py-7 flex justify-between items-center w-full h-full bg-primary p-5 ">
       <div>loogo</div>
       <div className="flex gap-5 justify-between items-center">
         <ModeToggle />
         <div
-          className="bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-slate-500/15"
+          className="bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-black/15"
           onClick={() => setToggleNav(!toggleNav)}
         >
           <Menu size={35} className="cursor-pointer" />
@@ -33,7 +33,7 @@ const MobileNavbar = () => {
       </div>
 
       {toggleNav && (
-        <ul className="border-t-2 flex justify-between flex-col items-center gap-4 border-slate-500 absolute top-20 left-0 w-full bg-popover p-5 shadow-lg">
+        <ul className="border-t-2 flex justify-between flex-col items-center gap-4 border-slate-500 absolute top-16 left-0 w-full bg-primary p-5 shadow-lg">
           <SingleLink path="/" name="Home" handleToggle={handleToggle} />
           <SingleLink path="/about" name="About" handleToggle={handleToggle} />
           <SingleLink
@@ -43,7 +43,7 @@ const MobileNavbar = () => {
           />
 
           <div
-            className="mx-auto max-w-16 flex justify-center items-center bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-slate-500/15"
+            className="mx-auto max-w-16 flex justify-center items-center bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-black/15"
             onClick={() => setToggleNav(!toggleNav)}
           >
             <X size={30} className="cursor-pointer" />
@@ -56,7 +56,7 @@ const MobileNavbar = () => {
 
 const DesktopNavbar = () => {
   return (
-    <div className="hidden md:flex pt-7 justify-between items-center w-full h-full bg-popover p-5">
+    <div className="hidden md:flex py-7 justify-between items-center w-full h-full bg-primary p-5">
       <div>loogo</div>
       <ul className="flex justify-between items-center gap-5">
         <SingleLink path="/" name="Home" />
@@ -83,7 +83,7 @@ const SingleLink = ({
   return (
     <li
       onClick={handleToggle}
-      className="bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-slate-500/15"
+      className="bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-black/15"
     >
       <Link to={path}>{name}</Link>
     </li>

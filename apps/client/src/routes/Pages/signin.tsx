@@ -20,8 +20,14 @@ function Signin() {
         <Separator className="w-[40%]" />
       </div>
       <div className="flex flex-col gap-5 ">
-        <Input placeholder="Email" className="gap-5 p-6 font-extrabold" />
-        <Input placeholder="Password" className="gap-5 p-6 font-extrabold" />
+        <Input
+          placeholder="Email"
+          className="gap-5 p-6 font-extrabold placeholder:opacity-80"
+        />
+        <Input
+          placeholder="Password"
+          className="gap-5 p-6 font-extrabold placeholder:opacity-80"
+        />
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 ">
             <Checkbox id="remember" />

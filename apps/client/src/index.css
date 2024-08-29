@@ -1,16 +1,20 @@
-@import url("https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Handjet:wght@100..900&family=Merienda:wght@900&family=Noto+Serif+Gujarati:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Merienda:wght@300..900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* .font {
+  font-family: "ADLaM Display", system-ui;
+  font-weight: 900;
+  font-style: normal;
+} */
 .font {
   font-family: "Noto Serif Gujarati", serif;
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
 }
-
 @layer base {
   :root {
     --background: 298 67% 93%;
