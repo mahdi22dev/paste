@@ -450,3 +450,5 @@
 2024-08-31T02:56:30.510231Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps\\api\\dist\\midddleware\\logger.middleware.js.map"), AnchoredSystemPathBuf("apps\\api\\dist\\midddleware\\logger.middleware.d.ts"), AnchoredSystemPathBuf("apps\\api\\dist\\midddleware\\logger.middleware.js"), AnchoredSystemPathBuf("apps\\api\\dist\\tsconfig.build.tsbuildinfo")}
 2024-08-31T02:56:30.510246Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("api"), path: AnchoredSystemPathBuf("apps\\api") }}))
 2024-08-31T02:56:30.808554Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2024-08-31T02:57:44.504264Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo\\daemon\\c7d7489ba5efe93b-turbo.log.2024-08-31")}
+2024-08-31T02:57:44.504279Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
