@@ -12,7 +12,7 @@ function Signin() {
       const response = await fetch("/api/users", {
         method: "POST",
         body: JSON.stringify({
-          email: "test@fmail.com",
+          email: "test@fmail.comm",
           password: "mahdi2019",
         }),
       });
