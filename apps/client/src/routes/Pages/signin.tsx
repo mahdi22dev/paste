@@ -3,7 +3,25 @@ import google from "../../assets/google.png";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
 function Signin() {
+  const [Loading, setLoading] = useState(false);
+  const handleSignin = async () => {
+    const d = { email: "mahdi@gmail.com", password: "mahdi2019" };
+    try {
+      setLoading(true);
+      const response = await fetch("/api/users", {
+        method: "POST",
+        body: JSON.stringify(d),
+      });
+      console.log(await response.json());
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-10 justify-center">
       <div>paste nest agly logo</div>
@@ -40,7 +58,13 @@ function Signin() {
           </div>
           <Button variant={"link"}>Forget password</Button>
         </div>
-        <Button className="mt-5 p-6 font-extrabold">Sign in</Button>
+        <Button
+          className="mt-5 p-6 font-extrabold"
+          onClick={handleSignin}
+          disabled={Loading}
+        >
+          Sign in
+        </Button>
         <div className="text-sm mx-auto flex justify-center items-center">
           Don't have account?
           <Button variant={"link"}>Sign up for free</Button>
