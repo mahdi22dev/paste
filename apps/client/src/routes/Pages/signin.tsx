@@ -7,10 +7,6 @@ import { useState } from "react";
 function Signin() {
   const [_, setLoading] = useState(false);
   const handleSignin = async () => {
-    const d = {
-      email: "test@fmail.com",
-      password: "mahdi2019",
-    };
     try {
       setLoading(true);
       const response = await fetch("/api/users", {
