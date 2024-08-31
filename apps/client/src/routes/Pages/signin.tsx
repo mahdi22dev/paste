@@ -5,14 +5,20 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 function Signin() {
-  const [Loading, setLoading] = useState(false);
+  const [_, setLoading] = useState(false);
   const handleSignin = async () => {
-    const d = { email: "mahdi@gmail.com", password: "mahdi2019" };
+    const d = {
+      email: "test@fmail.com",
+      password: "mahdi2019",
+    };
     try {
       setLoading(true);
       const response = await fetch("/api/users", {
         method: "POST",
-        body: JSON.stringify(d),
+        body: JSON.stringify({
+          email: "test@fmail.com",
+          password: "mahdi2019",
+        }),
       });
       console.log(await response.json());
     } catch (error) {
@@ -58,11 +64,7 @@ function Signin() {
           </div>
           <Button variant={"link"}>Forget password</Button>
         </div>
-        <Button
-          className="mt-5 p-6 font-extrabold"
-          onClick={handleSignin}
-          disabled={Loading}
-        >
+        <Button className="mt-5 p-6 font-extrabold" onClick={handleSignin}>
           Sign in
         </Button>
         <div className="text-sm mx-auto flex justify-center items-center">
