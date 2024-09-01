@@ -15,20 +15,19 @@ export class AuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     // Get the roles required for the route from the decorator
-    const requiredRoles = this.reflector.getAllAndOverride<Role[]>('roles', [
+    const Roles = this.reflector.getAllAndOverride<Role[]>('roles', [
       context.getHandler(),
       context.getClass(),
     ]);
-
-    if (!requiredRoles) {
+    if (!Roles) {
       console.log('no roles required');
       return true; // No roles required for the route
     }
-    console.log(requiredRoles);
+    console.log(Roles);
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    console.log(user);
-    //  check matched roles with prisma
+
+    //  check matched roles with prisma +by matching roles and sers using function with matchroles() name
     return true;
   }
 }

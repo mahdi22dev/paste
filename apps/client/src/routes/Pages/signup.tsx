@@ -2,19 +2,23 @@ import { Button } from "@/components/ui/button";
 import google from "../../assets/google.png";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-function SignIn() {
+
+function SignUp() {
   const [_, setLoading] = useState(false);
-  const handleSignin = async () => {
+  const handleSignUp = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/auth/", {
+      const response = await fetch("/api/auth/signup", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           email: "test@fmail.comm",
           password: "mahdi2019",
+          username: "wefwfwef",
         }),
       });
       console.log(await response.json());
@@ -42,6 +46,10 @@ function SignIn() {
       </div>
       <div className="flex flex-col gap-5 ">
         <Input
+          placeholder="Username"
+          className="gap-5 p-6 font-extrabold placeholder:opacity-80"
+        />
+        <Input
           placeholder="Email"
           className="gap-5 p-6 font-extrabold placeholder:opacity-80"
         />
@@ -49,25 +57,14 @@ function SignIn() {
           placeholder="Password"
           className="gap-5 p-6 font-extrabold placeholder:opacity-80"
         />
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 ">
-            <Checkbox id="remember" />
-            <label
-              htmlFor="remember"
-              className="mt-1 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Remember me
-            </label>
-          </div>
-          <Button variant={"link"}>Forget password</Button>
-        </div>
-        <Button className="mt-5 p-6 font-extrabold" onClick={handleSignin}>
-          Sign in
+
+        <Button className="mt-5 p-6 font-extrabold" onClick={handleSignUp}>
+          Sign Up
         </Button>
         <div className="text-sm mx-auto flex justify-center items-center">
-          Don't have account?
+          Already have an account?
           <Button asChild variant={"link"}>
-            <Link to={"/auth/signup"}>Sign up for free</Link>
+            <Link to={"/auth/signin"}>Sign in</Link>
           </Button>
         </div>
       </div>
@@ -75,4 +72,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default SignUp;

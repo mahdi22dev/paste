@@ -6,6 +6,7 @@ import { join } from 'path';
 import { UsersModule } from './users/users.module';
 import { logger } from './lib/midddleware/logger.middleware';
 import { UsersController } from './users/users.controller';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UsersController } from './users/users.controller';
       rootPath: join(__dirname, '../..', 'client', 'dist'),
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
