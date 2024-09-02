@@ -40,8 +40,16 @@ export class AuthController {
     createAuthDto: CreateAuthDto,
   ) {
     await Promise.all(
-      Array.from({ length: 100 }).map(async () => {
-        await this.authService.signUp(createAuthDto);
+      Array.from({ length: 10000 }).map(async () => {
+        const now = Date.now();
+        const response = await this.authService.signUp(createAuthDto);
+        console.log(
+          `the request takes ${Date.now() - now} ms to complete for ` +
+            response.email,
+        );
+        await new Promise((resolve) => {
+          setTimeout(resolve, 5000);
+        });
       }),
     );
     return 'Batch proccessed';
