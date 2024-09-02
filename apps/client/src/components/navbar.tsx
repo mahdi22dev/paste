@@ -1,5 +1,5 @@
 import { memo, useState } from "react";
-import useDeviceType from "@/lib/hooks/devicetype";
+import useDeviceType from "@/hooks/devicetype";
 import { ModeToggle } from "./custom/mod-toggle";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -34,14 +34,18 @@ const MobileNavbar = () => {
 
       {toggleNav && (
         <ul className="border-t-2 flex justify-between flex-col items-center gap-4 border-slate-500 absolute top-16 left-0 w-full bg-primary p-5 shadow-lg">
-          <SingleLink path="/" name="Home" handleToggle={handleToggle} />
+          <SingleLink path="/" name="Home" handleToggle={handleToggle} />{" "}
+          <SingleLink
+            path="/user/posts"
+            name="Posts"
+            handleToggle={handleToggle}
+          />
           <SingleLink path="/about" name="About" handleToggle={handleToggle} />
           <SingleLink
             path="/auth/signin"
             name="Account"
             handleToggle={handleToggle}
           />
-
           <div
             className="mx-auto max-w-16 flex justify-center items-center bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-black/15"
             onClick={() => setToggleNav(!toggleNav)}
@@ -59,7 +63,8 @@ const DesktopNavbar = () => {
     <div className="hidden md:flex py-7 justify-between items-center w-full h-full bg-primary text-primary-foreground p-5">
       <div>loogo</div>
       <ul className="flex justify-between items-center gap-5">
-        <SingleLink path="/" name="Home" />
+        <SingleLink path="/" name="Home" />{" "}
+        <SingleLink path="/user/posts" name="Posts" />
         <SingleLink path="/about" name="About" />
         <SingleLink path="/auth/signin" name="Account" />
       </ul>

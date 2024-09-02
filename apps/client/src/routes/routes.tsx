@@ -1,10 +1,10 @@
 import ErrorPage from "@/error-page";
-
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "@/components/layout";
 import { About, Home } from "./Pages";
 import Signin from "./Pages/signin";
 import SignUp from "./Pages/signup";
+import PrivateRoutes from "./PrivateRoutes";
 
 const routers = createBrowserRouter([
   {
@@ -13,16 +13,22 @@ const routers = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "contacts/:contactId",
-        element: <Home />,
-      },
-      {
         path: "/",
         element: <Home />,
       },
       {
         path: "/home",
         element: <Home />,
+      },
+      {
+        path: "/user",
+        element: <PrivateRoutes />,
+        children: [
+          {
+            path: "/user/posts",
+            element: <Home />,
+          },
+        ],
       },
       {
         path: "/about",

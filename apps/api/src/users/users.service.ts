@@ -1,11 +1,10 @@
 import {
   ConflictException,
-  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { hashPassword } from 'src/lib/utils';
@@ -18,7 +17,7 @@ export class UsersService {
     try {
       return await this.prisma.user.create({
         data: {
-          email: createUserDto.email,
+          email: Math.random() + '_' + createUserDto.email,
           username: createUserDto.username,
           password: await hashPassword(createUserDto.password),
           createdAt: new Date().toISOString(),
@@ -39,7 +38,7 @@ export class UsersService {
     }
   }
 
-  async findOne(FindUserDto: FindUserDto) {
+  async findOne(FindUserDto: FindUserDto): Promise<User | null> {
     try {
       const user = await this.prisma.user.findUnique({
         where: {
@@ -56,5 +55,6 @@ export class UsersService {
         throw error;
       }
     }
+    return null;
   }
 }

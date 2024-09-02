@@ -1,6 +1,7 @@
 import {
   Injectable,
   NotFoundException,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -8,6 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { FindUserDto } from 'src/users/dto/find-user.dto';
 import { compareHashes, hashPassword } from 'src/lib/utils';
+import { Response } from 'express';
+import { isString } from 'util';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
     private readonly usersService: UsersService,
   ) {}
-  async signIn(FindUserDto: FindUserDto) {
+  async signIn(FindUserDto: FindUserDto, response: Response) {
     try {
       const user = await this.usersService.findOne(FindUserDto);
       if (!user) {
@@ -31,11 +34,18 @@ export class AuthService {
         throw new UnauthorizedException('You enetred wrong password.');
       }
       const payload = { id: user.id, user: user.username, email: user.email };
-      return {
+
+      const token = {
         access_token: await this.jwtService.signAsync(payload, {
           expiresIn: '30d',
         }),
       };
+
+      if (token.access_token) {
+        response.cookie('pastenest_access_token', token.access_token);
+      } else {
+        throw new ServiceUnavailableException("Couldn't autherize user");
+      }
     } catch (error) {
       throw error;
     }
