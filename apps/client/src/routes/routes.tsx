@@ -6,6 +6,7 @@ import Signin from "./Pages/signin";
 import SignUp from "./Pages/signup";
 import PrivateRoutes from "./PrivateRoutes";
 import Posts from "./Pages/posts";
+import RedirectFromAuth from "./RedirectFromAuth";
 
 const routers = createBrowserRouter([
   {
@@ -36,12 +37,18 @@ const routers = createBrowserRouter([
         element: <About />,
       },
       {
-        path: "/auth/signin",
-        element: <Signin />,
-      },
-      {
-        path: "/auth/signup",
-        element: <SignUp />,
+        path: "/auth",
+        element: <RedirectFromAuth />,
+        children: [
+          {
+            path: "/auth/signin",
+            element: <Signin />,
+          },
+          {
+            path: "/auth/signup",
+            element: <SignUp />,
+          },
+        ],
       },
     ],
   },

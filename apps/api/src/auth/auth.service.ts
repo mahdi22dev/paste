@@ -58,9 +58,8 @@ export class AuthService {
     try {
       const auth_token = request.cookies.pastenest_access_token;
       const user = await this.jwtService.verify(auth_token, {});
-      return { valid: true, ...user };
+      return user;
     } catch (error) {
-      console.log(error);
       throw new UnauthorizedException('User unauthorized');
     }
   }

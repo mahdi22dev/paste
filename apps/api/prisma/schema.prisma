@@ -13,8 +13,10 @@ model User {
   email     String    @unique
   username  String
   password  String
-  createdAt DateTime?
+  createdAt DateTime? @default(now())
   posts     Post[]
+
+  @@index([email])
 }
 
 model Post {

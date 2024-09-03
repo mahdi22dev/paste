@@ -4,17 +4,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* .font {
-  font-family: "ADLaM Display", system-ui;
-  font-weight: 900;
-  font-style: normal;
-} */
 .font {
   font-family: "Noto Serif Gujarati", serif;
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
 }
+
 @layer base {
   :root {
     --background: 298 67% 93%;
@@ -61,11 +57,18 @@
     --ring: 347 70% 60%;
   }
 }
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply custom_bg text-foreground;
+}
+.custom_bg {
+  @apply bg-gradient-to-t from-slate-400 to-rose-300;
+}
+
+.dark .custom_bg {
+  @apply bg-gradient-to-r from-gray-800 to-gray-600; /* Dark mode gradient */
 }

@@ -4,10 +4,12 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
-import { Formik, Form, useField } from "formik";
+import { Formik, useField, Form } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { signInSchema } from "@/lib/validation";
 import { PulseLoader } from "react-spinners";
+import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 function SignIn() {
   return (
@@ -23,6 +25,7 @@ const SignInForm = () => {
   const [_, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+
   const handleSignin = async (values: any) => {
     try {
       localStorage.setItem("remember_me", "true");
@@ -46,14 +49,24 @@ const SignInForm = () => {
       }
 
       if (token?.access_token) {
-        localStorage.setItem("auth_token", token.access_token);
-        return navigate("/user/posts");
-      } else {
-        // show pleaese try again
+        try {
+          localStorage.setItem("auth_token", token.access_token);
+          return navigate("/user/posts");
+        } catch (error) {
+          toast({
+            variant: "default",
+            title: "Please Try again later",
+            description: "internal server error at " + new Date().toISOString(),
+          });
+        }
       }
       console.log(token);
     } catch (error) {
-      // dispaly error wurg toast
+      toast({
+        variant: "default",
+        title: "Please Try again later",
+        description: "internal server error at " + new Date().toISOString(),
+      });
     } finally {
       setLoading(false);
     }
@@ -67,11 +80,13 @@ const SignInForm = () => {
         </div>
         Log in with Google{" "}
       </Button>
+
       <div className="flex items-center justify-center gap-3">
         <Separator className="w-[40%]" />
         <p>Or</p>
         <Separator className="w-[40%]" />
       </div>
+
       <Formik
         initialValues={{
           email: "",
@@ -85,7 +100,9 @@ const SignInForm = () => {
         {({ isSubmitting }) => (
           <Form>
             {message && (
-              <p className="text-destructive p-2 mb-4 text-center">{message}</p>
+              <p className="text-destructive p-2 mb-4 text-center text-[16px]">
+                {message}
+              </p>
             )}
             <div className="flex flex-col gap-5 ">
               <MyTextInput
@@ -139,8 +156,8 @@ const SignInForm = () => {
     </>
   );
 };
-// @ts-ignore
-const MyTextInput = ({ label, ...props }) => {
+
+const MyTextInput = ({ ...props }) => {
   // @ts-ignore
   const [field, meta] = useField(props);
   return (
@@ -152,7 +169,7 @@ const MyTextInput = ({ label, ...props }) => {
       />
 
       {meta.touched && meta.error ? (
-        <div className="text-destructive mt-3">{meta.error}</div>
+        <div className="text-destructive mt-3 text-[13px]">{meta.error}</div>
       ) : null}
     </div>
   );
