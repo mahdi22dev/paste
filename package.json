@@ -9,6 +9,7 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "start": "node apps/api/dist/main",
+    "prisma": "cd ./apps/api && npx prisma generate && cd ../.. && npm run build",
     "ui": "pnpm -F apps/client dlx shadcn-ui@latest add"
   },
   "devDependencies": {

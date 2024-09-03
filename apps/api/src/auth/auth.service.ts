@@ -9,8 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { FindUserDto } from 'src/users/dto/find-user.dto';
 import { compareHashes, hashPassword } from 'src/lib/utils';
-import { Response } from 'express';
-import { isString } from 'util';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -43,6 +42,7 @@ export class AuthService {
 
       if (token.access_token) {
         response.cookie('pastenest_access_token', token.access_token);
+        return token;
       } else {
         throw new ServiceUnavailableException("Couldn't autherize user");
       }
@@ -52,5 +52,15 @@ export class AuthService {
   }
   async signUp(createAuthDto: CreateAuthDto) {
     return this.usersService.create(createAuthDto);
+  }
+  async verify(request: Request) {
+    try {
+      const auth_token = request.cookies.pastenest_access_token;
+      const user = await this.jwtService.verify(auth_token, {});
+      return { valid: true, ...user };
+    } catch (error) {
+      console.log(error);
+      throw new UnauthorizedException('User unauthorized');
+    }
   }
 }

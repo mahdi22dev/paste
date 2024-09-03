@@ -39,12 +39,14 @@ const MobileNavbar = () => {
             path="/user/posts"
             name="Posts"
             handleToggle={handleToggle}
+            hardNavigation
           />
           <SingleLink path="/about" name="About" handleToggle={handleToggle} />
           <SingleLink
             path="/auth/signin"
             name="Account"
             handleToggle={handleToggle}
+            hardNavigation
           />
           <div
             className="mx-auto max-w-16 flex justify-center items-center bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-black/15"
@@ -64,9 +66,9 @@ const DesktopNavbar = () => {
       <div>loogo</div>
       <ul className="flex justify-between items-center gap-5">
         <SingleLink path="/" name="Home" />{" "}
-        <SingleLink path="/user/posts" name="Posts" />
+        <SingleLink path="/user/posts" name="Posts" hardNavigation />
         <SingleLink path="/about" name="About" />
-        <SingleLink path="/auth/signin" name="Account" />
+        <SingleLink path="/auth/signin" name="Account" hardNavigation />
       </ul>
       <div className="flex gap-5 justify-between items-center">
         <ModeToggle />
@@ -80,17 +82,23 @@ const SingleLink = ({
   handleToggle,
   name,
   path,
+  hardNavigation,
 }: {
   handleToggle?: HandleToggle;
   name: string;
   path: string;
+  hardNavigation?: true;
 }) => {
   return (
     <li
       onClick={handleToggle}
       className="bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-black/15"
     >
-      <Link to={path}>{name}</Link>
+      {hardNavigation ? (
+        <a href={path}>{name}</a>
+      ) : (
+        <Link to={path}>{name}</Link>
+      )}
     </li>
   );
 };

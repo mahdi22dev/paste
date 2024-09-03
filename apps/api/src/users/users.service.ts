@@ -17,7 +17,7 @@ export class UsersService {
     try {
       return await this.prisma.user.create({
         data: {
-          email: Math.random() + '_' + createUserDto.email,
+          email: createUserDto.email,
           username: createUserDto.username,
           password: await hashPassword(createUserDto.password),
           createdAt: new Date().toISOString(),

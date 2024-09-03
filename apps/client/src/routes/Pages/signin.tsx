@@ -10,16 +10,24 @@ function SignIn() {
   const handleSignin = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/auth/", {
+      const response = await fetch("/api/auth/signin", {
         method: "POST",
         body: JSON.stringify({
-          email: "test@fmail.comm",
+          email: "admin@gmail.com",
           password: "mahdi2019",
         }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-      console.log(await response.json());
+      const token = (await response.json()) as { access_token: string };
+      if (token.access_token) {
+        localStorage.setItem("auth_token", token.access_token);
+      } else {
+        // show pleaes try again
+      }
     } catch (error) {
-      console.log(error);
+      // dispaly error
     } finally {
       setLoading(false);
     }
