@@ -15,7 +15,6 @@ import { ZodValidationPipe } from 'src/lib/pipes/pipes';
 import { FindUserDto, FindUserSchema } from 'src/users/dto/find-user.dto';
 import { LoggingInterceptor } from 'src/interceptor/logging.interceptor';
 import { Request, Response } from 'express';
-import { z } from 'zod';
 
 @UseInterceptors(LoggingInterceptor)
 @Controller('auth')
@@ -34,41 +33,22 @@ export class AuthController {
 
   @HttpCode(HttpStatus.ACCEPTED)
   @Get('verify')
-  async verify(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
-    // @Body(new ZodValidationPipe(z.object({ token: z.string() })))
-  ) {
-    // this route for protecting fronend routes , to protect data and validate it we need to authguard
-    console.log(request.cookies);
+  async verify(@Req() request: Request) {
     return this.authService.verify(request);
+  }
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Get('logout')
+  async Logout(@Res({ passthrough: true }) response: Response) {
+    return this.authService.logOut(response);
   }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('signup')
   async signUp(
+    @Res({ passthrough: true }) response: Response,
     @Body(new ZodValidationPipe(CreateAuthDtoSchema))
     createAuthDto: CreateAuthDto,
   ) {
-    // await Promise.all(
-
-    //   Array.from({ length: 10000 }).map(async () => {
-    //     const now = Date.now();
-    //     const response = await this.authService.signUp(createAuthDto);
-    //     console.log(
-    //       `the request takes ${Date.now() - now} ms to complete for ` +
-    //         response.email,
-    //     );
-    //     await new Promise((resolve) => {
-    //       setTimeout(resolve, 5000);
-    //     });
-    //   }),
-    // );
-    const now = Date.now();
-    const user = await this.authService.signUp(createAuthDto);
-    console.log(
-      `the request takes ${Date.now() - now} ms to complete for ` + user.email,
-    );
-    return user;
+    return await this.authService.signUp(createAuthDto, response);
   }
 }

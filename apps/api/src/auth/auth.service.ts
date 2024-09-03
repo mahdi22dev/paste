@@ -8,7 +8,7 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { FindUserDto } from 'src/users/dto/find-user.dto';
-import { compareHashes, hashPassword } from 'src/lib/utils';
+import { compareHashes } from 'src/lib/utils';
 import { Request, Response } from 'express';
 
 @Injectable()
@@ -51,8 +51,23 @@ export class AuthService {
       throw error;
     }
   }
-  async signUp(createAuthDto: CreateAuthDto) {
-    return this.usersService.create(createAuthDto);
+  async signUp(createAuthDto: CreateAuthDto, response: Response) {
+    const user = await this.usersService.create(createAuthDto);
+    if (!user) {
+      throw new ServiceUnavailableException("Couldn't create the user");
+    }
+    const payload = { id: user.id, user: user.username, email: user.email };
+    const token = {
+      access_token: await this.jwtService.signAsync(payload, {
+        expiresIn: '30d',
+      }),
+    };
+    if (token.access_token) {
+      response.cookie('pastenest_access_token', token.access_token);
+      return token;
+    } else {
+      throw new ServiceUnavailableException("Couldn't autherize the user");
+    }
   }
   async verify(request: Request) {
     try {
@@ -61,6 +76,13 @@ export class AuthService {
       return user;
     } catch (error) {
       throw new UnauthorizedException('User unauthorized');
+    }
+  }
+  async logOut(response: Response) {
+    try {
+      response.clearCookie('pastenest_access_token');
+    } catch (error) {
+      throw new UnauthorizedException("Couldn't complete the action");
     }
   }
 }

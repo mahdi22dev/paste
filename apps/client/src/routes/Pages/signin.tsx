@@ -21,7 +21,6 @@ function SignIn() {
 }
 
 const SignInForm = () => {
-  const [_, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -29,7 +28,7 @@ const SignInForm = () => {
     try {
       localStorage.setItem("remember_me", "true");
       setMessage("");
-      setLoading(true);
+
       const response = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -40,8 +39,8 @@ const SignInForm = () => {
           password: values.password,
         }),
       });
-      let token = await response.json();
 
+      let token = await response.json();
       if (!response.ok) {
         setMessage(token.message.message);
         return;
@@ -59,15 +58,12 @@ const SignInForm = () => {
           });
         }
       }
-      console.log(token);
     } catch (error) {
       toast({
         variant: "default",
         title: "Please Try again later",
         description: "internal server error at " + new Date().toISOString(),
       });
-    } finally {
-      setLoading(false);
     }
   };
 

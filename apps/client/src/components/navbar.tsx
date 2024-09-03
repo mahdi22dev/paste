@@ -3,18 +3,51 @@ import useDeviceType from "@/hooks/devicetype";
 import { ModeToggle } from "./custom/mod-toggle";
 import { Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CiLogin, CiLogout } from "react-icons/ci";
+import { useAuth } from "@/providers/AuthGuard";
+import { Button } from "./ui/button";
+import { toast } from "@/hooks/use-toast";
 
 const Navbar = memo(() => {
   const isMobile = useDeviceType();
+  const { isAuthenticated } = useAuth();
 
+  const logOut = async () => {
+    try {
+      const response = await fetch("/api/auth/logout");
+      if (!response.ok) {
+        toast({
+          variant: "default",
+          title: "Please Try again later",
+          description: "internal server error at " + new Date().toISOString(),
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: "default",
+        title: "Please Try again later",
+        description: "internal server error at " + new Date().toISOString(),
+      });
+    }
+  };
   return (
     <nav className=" h-16 w-full font">
-      {isMobile == "mobile" ? <MobileNavbar /> : <DesktopNavbar />}
+      {isMobile == "mobile" ? (
+        <MobileNavbar isAuthenticated={isAuthenticated} logOut={logOut} />
+      ) : (
+        <DesktopNavbar isAuthenticated={isAuthenticated} logOut={logOut} />
+      )}
     </nav>
   );
 });
 
-const MobileNavbar = () => {
+const MobileNavbar = ({
+  isAuthenticated,
+  logOut,
+}: {
+  isAuthenticated: boolean;
+  logOut: () => Promise<void>;
+}) => {
   const [toggleNav, setToggleNav] = useState(false);
   const handleToggle = () => {
     setToggleNav(false);
@@ -25,6 +58,11 @@ const MobileNavbar = () => {
     >
       <div>loogo</div>
       <div className="flex gap-5 justify-between items-center">
+        <AuthComponent
+          isAuthenticated={isAuthenticated}
+          toggleNav={toggleNav}
+          logOut={logOut}
+        />
         <ModeToggle />
         <div
           className="bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-black/15"
@@ -43,12 +81,6 @@ const MobileNavbar = () => {
             handleToggle={handleToggle}
           />
           <SingleLink path="/about" name="About" handleToggle={handleToggle} />
-          <SingleLink
-            path="/auth/signin"
-            name="Account"
-            handleToggle={handleToggle}
-            hardNavigation
-          />
           <div
             className="mx-auto max-w-16 flex justify-center items-center bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-black/15"
             onClick={() => setToggleNav(!toggleNav)}
@@ -61,7 +93,13 @@ const MobileNavbar = () => {
   );
 };
 
-const DesktopNavbar = () => {
+const DesktopNavbar = ({
+  isAuthenticated,
+  logOut,
+}: {
+  isAuthenticated: boolean;
+  logOut: () => Promise<void>;
+}) => {
   return (
     <div className="hidden md:flex py-3 justify-between items-center px-5 max-w-7xl mx-auto border-b border-gray-700">
       <div>loogo</div>
@@ -69,7 +107,7 @@ const DesktopNavbar = () => {
         <SingleLink path="/" name="Home" />{" "}
         <SingleLink path="/user/posts" name="Posts" />
         <SingleLink path="/about" name="About" />
-        <SingleLink path="/auth/signin" name="Account" hardNavigation />
+        <AuthComponent isAuthenticated={isAuthenticated} logOut={logOut} />
         <div className="flex gap-5 justify-between items-center">
           <ModeToggle />
         </div>{" "}
@@ -108,6 +146,43 @@ const SingleLink = ({
         {name}
       </li>
     </Link>
+  );
+};
+
+const AuthComponent = ({
+  isAuthenticated,
+  toggleNav,
+  logOut,
+}: {
+  isAuthenticated: boolean;
+  toggleNav?: boolean;
+  logOut: () => Promise<void>;
+}) => {
+  return isAuthenticated ? (
+    <a
+      href={"/auth/signin"}
+      className=" p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out "
+    >
+      <Button
+        className="flex items-center justify-between gap-2"
+        variant={"secondary"}
+        onClick={logOut}
+      >
+        <CiLogout size={25} /> Sign Out
+      </Button>
+    </a>
+  ) : (
+    <a
+      href={"/auth/signin"}
+      className=" p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out "
+    >
+      <Button
+        className="flex items-center justify-between gap-2"
+        variant={`${toggleNav ? "secondary" : "default"}`}
+      >
+        <CiLogin size={25} /> Sign In
+      </Button>
+    </a>
   );
 };
 export default Navbar;

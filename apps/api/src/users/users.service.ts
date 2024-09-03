@@ -17,7 +17,7 @@ export class UsersService {
     try {
       return await this.prisma.user.create({
         data: {
-          email: createUserDto.email,
+          email: Math.random() + createUserDto.email,
           username: createUserDto.username,
           password: await hashPassword(createUserDto.password),
           createdAt: new Date().toISOString(),
@@ -26,9 +26,7 @@ export class UsersService {
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new ConflictException(
-            'User with email or username already exists.',
-          );
+          throw new ConflictException('User with email already exists.');
         }
         if (error.code === 'P2001') {
           throw new NotFoundException('Requested resources not found');

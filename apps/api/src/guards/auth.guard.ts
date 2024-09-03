@@ -14,7 +14,6 @@ export class AuthGuard implements CanActivate {
 
     const request: Request = context.switchToHttp().getRequest();
     const url = request.url;
-    console.log(url);
 
     // if (!Roles) {
     //   console.log('no roles required');
