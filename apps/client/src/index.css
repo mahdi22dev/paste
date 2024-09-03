@@ -65,8 +65,9 @@
 body {
   @apply custom_bg text-foreground;
 }
+
 .custom_bg {
-  @apply bg-gradient-to-t from-slate-400 to-rose-300;
+  @apply bg-gradient-to-r from-slate-400 to-rose-300;
 }
 
 .dark .custom_bg {
