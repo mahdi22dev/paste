@@ -51,6 +51,7 @@ export class AuthController {
     createAuthDto: CreateAuthDto,
   ) {
     // await Promise.all(
+
     //   Array.from({ length: 10000 }).map(async () => {
     //     const now = Date.now();
     //     const response = await this.authService.signUp(createAuthDto);

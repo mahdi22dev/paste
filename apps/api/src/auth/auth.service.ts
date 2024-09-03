@@ -17,6 +17,7 @@ export class AuthService {
     private jwtService: JwtService,
     private readonly usersService: UsersService,
   ) {}
+
   async signIn(FindUserDto: FindUserDto, response: Response) {
     try {
       const user = await this.usersService.findOne(FindUserDto);

@@ -16,7 +16,7 @@ function SignUp() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: "test@fmail.comm",
+          email: "admin@gmail.com",
           password: "mahdi2019",
           username: "wefwfwef",
         }),
