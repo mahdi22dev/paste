@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { Formik, Form, useField } from "formik";
-import { Link, redirect } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signInSchema } from "@/lib/validation";
 import { PulseLoader } from "react-spinners";
 
@@ -22,6 +22,7 @@ function SignIn() {
 const SignInForm = () => {
   const [_, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
   const handleSignin = async (values: any) => {
     try {
       localStorage.setItem("remember_me", "true");
@@ -46,7 +47,7 @@ const SignInForm = () => {
 
       if (token?.access_token) {
         localStorage.setItem("auth_token", token.access_token);
-        return redirect("/user/posts");
+        return navigate("/user/posts");
       } else {
         // show pleaese try again
       }
@@ -57,6 +58,7 @@ const SignInForm = () => {
       setLoading(false);
     }
   };
+
   return (
     <>
       <Button className="bg-white text-black hover:bg-white flex justify-center items-center gap-3 p-6 font-extrabold">
