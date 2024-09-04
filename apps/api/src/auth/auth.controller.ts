@@ -48,9 +48,10 @@ export class AuthController {
   @Post('signup')
   async signUp(
     @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
     @Body(new ZodValidationPipe(CreateAuthDtoSchema))
     createAuthDto: CreateAuthDto,
   ) {
-    return await this.authService.signUp(createAuthDto, response);
+    return await this.authService.signUp(createAuthDto, response, request);
   }
 }

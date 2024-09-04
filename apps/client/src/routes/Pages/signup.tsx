@@ -3,20 +3,19 @@ import google from "../../assets/google.png";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Formik, useField, Form } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { signUpSchema } from "@/lib/validation";
 import { PulseLoader } from "react-spinners";
 import { toast } from "@/hooks/use-toast";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function SignUp() {
   return (
     <div className="flex flex-col gap-10 justify-center">
       <div>paste nest agly logo</div>
-      <h1 className="text-xl">
-        Please enter your details to register new account
-      </h1>
+      <h1 className="text-xl">Welcome user! Please enter your details</h1>
       <SignInForm />
     </div>
   );
@@ -25,14 +24,32 @@ function SignUp() {
 const SignInForm = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const recaptchaRef: any = useRef();
+
+  const onSubmitWithReCAPTCHA = async (): Promise<string | null> => {
+    if (recaptchaRef.current) {
+      const token = await recaptchaRef.current.executeAsync();
+      return token;
+    }
+    return null;
+  };
   const handleSignin = async (values: any) => {
     try {
+      const captchaToken = await onSubmitWithReCAPTCHA();
+      if (!captchaToken) {
+        return toast({
+          variant: "default",
+          title: "Please Try again later",
+          description: "internal server error at " + new Date().toISOString(),
+        });
+      }
       localStorage.setItem("remember_me", "true");
       setMessage("");
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Recaptcha-Token": captchaToken,
         },
         body: JSON.stringify({
           email: values.email,
@@ -42,6 +59,13 @@ const SignInForm = () => {
       });
       let token = await response.json();
 
+      if (response.status == 503) {
+        return toast({
+          variant: "default",
+          title: "Service Unavailable",
+          description: "Couldn't complete the reques right now",
+        });
+      }
       if (!response.ok) {
         setMessage(token.message.message);
         return;
@@ -68,8 +92,8 @@ const SignInForm = () => {
     }
   };
   return (
-    <>
-      <Button className="bg-white text-black hover:bg-white flex justify-center items-center gap-3 p-6 font-extrabold">
+    <div className="max-w-7x flex gap-3 flex-col">
+      <Button className="bg-white text-black hover:bg-white flex justify-center items-center gap-3 p-6 font-extrabold w-full">
         <div className="w-5">
           <img src={google} />
         </div>
@@ -95,6 +119,12 @@ const SignInForm = () => {
       >
         {({ isSubmitting }) => (
           <Form>
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              size="invisible"
+              sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+              hidden
+            />
             {message && (
               <p className="text-destructive p-2 mb-4 text-center text-[16px]">
                 {message}
@@ -115,6 +145,7 @@ const SignInForm = () => {
                 placeholder="Email"
                 disabled={isSubmitting}
               />
+
               <MyTextInput
                 label="Password"
                 name="password"
@@ -122,6 +153,7 @@ const SignInForm = () => {
                 placeholder="Password"
                 disabled={isSubmitting}
               />
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 ">
                   <Checkbox id="remember" />
@@ -156,7 +188,7 @@ const SignInForm = () => {
           </Form>
         )}
       </Formik>
-    </>
+    </div>
   );
 };
 

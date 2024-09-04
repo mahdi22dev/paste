@@ -86,7 +86,16 @@ export class AuthService {
     }
   }
 
-  async signUp(createAuthDto: CreateAuthDto, response: Response) {
+  async signUp(
+    createAuthDto: CreateAuthDto,
+    response: Response,
+    request: Request,
+  ) {
+    const bot = await this.validateCaptcha(request);
+    if (!bot) {
+      throw new ServiceUnavailableException("Couldn't complete the request");
+    }
+
     const user = await this.usersService.create(createAuthDto);
     if (!user) {
       throw new ServiceUnavailableException("Couldn't create the user");

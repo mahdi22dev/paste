@@ -44,8 +44,6 @@ const SignInForm = () => {
           description: "internal server error at " + new Date().toISOString(),
         });
       }
-      console.log(captchaToken);
-
       localStorage.setItem("remember_me", "true");
       setMessage("");
       const response = await fetch("/api/auth/signin", {
@@ -95,8 +93,8 @@ const SignInForm = () => {
   };
 
   return (
-    <>
-      <Button className="bg-white text-black hover:bg-white flex justify-center items-center gap-3 p-6 font-extrabold">
+    <div className="max-w-7x flex gap-3 flex-col">
+      <Button className="bg-white text-black hover:bg-white flex justify-center items-center gap-3 p-6 font-extrabold w-full">
         <div className="w-5">
           <img src={google} />
         </div>
@@ -121,6 +119,12 @@ const SignInForm = () => {
       >
         {({ isSubmitting }) => (
           <Form>
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              size="invisible"
+              sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+              hidden
+            />
             {message && (
               <p className="text-destructive p-2 mb-4 text-center text-[16px]">
                 {message}
@@ -153,12 +157,7 @@ const SignInForm = () => {
                 </div>
                 <Button variant={"link"}>Forget password</Button>
               </div>
-              <ReCAPTCHA
-                ref={recaptchaRef}
-                size="invisible"
-                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                hidden
-              />
+
               <Button
                 type="submit"
                 className="mt-5 p-6 font-extrabold"
@@ -180,7 +179,7 @@ const SignInForm = () => {
           </Form>
         )}
       </Formik>
-    </>
+    </div>
   );
 };
 
