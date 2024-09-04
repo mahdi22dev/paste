@@ -25,10 +25,11 @@ export class AuthController {
   @Post('signin')
   async signIn(
     @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
     @Body(new ZodValidationPipe(FindUserSchema))
     FindUserDto: FindUserDto,
   ) {
-    return this.authService.signIn(FindUserDto, response);
+    return this.authService.signIn(FindUserDto, response, request);
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
@@ -36,6 +37,7 @@ export class AuthController {
   async verify(@Req() request: Request) {
     return this.authService.verify(request);
   }
+
   @HttpCode(HttpStatus.ACCEPTED)
   @Get('logout')
   async Logout(@Res({ passthrough: true }) response: Response) {

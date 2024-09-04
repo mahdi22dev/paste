@@ -3,12 +3,13 @@ import google from "../../assets/google.png";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Formik, useField, Form } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { signInSchema } from "@/lib/validation";
 import { PulseLoader } from "react-spinners";
 import { toast } from "@/hooks/use-toast";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function SignIn() {
   return (
@@ -23,16 +24,35 @@ function SignIn() {
 const SignInForm = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const recaptchaRef: any = useRef();
+
+  const onSubmitWithReCAPTCHA = async (): Promise<string | null> => {
+    if (recaptchaRef.current) {
+      const token = await recaptchaRef.current.executeAsync();
+      return token;
+    }
+    return null;
+  };
 
   const handleSignin = async (values: any) => {
     try {
+      const captchaToken = await onSubmitWithReCAPTCHA();
+      if (!captchaToken) {
+        return toast({
+          variant: "default",
+          title: "Please Try again later",
+          description: "internal server error at " + new Date().toISOString(),
+        });
+      }
+      console.log(captchaToken);
+
       localStorage.setItem("remember_me", "true");
       setMessage("");
-
       const response = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Recaptcha-Token": captchaToken,
         },
         body: JSON.stringify({
           email: values.email,
@@ -41,6 +61,13 @@ const SignInForm = () => {
       });
 
       let token = await response.json();
+      if (response.status == 503) {
+        return toast({
+          variant: "default",
+          title: "Service Unavailable",
+          description: "Couldn't complete the reques right now",
+        });
+      }
       if (!response.ok) {
         setMessage(token.message.message);
         return;
@@ -51,7 +78,7 @@ const SignInForm = () => {
           localStorage.setItem("auth_token", token.access_token);
           return navigate("/user/posts");
         } catch (error) {
-          toast({
+          return toast({
             variant: "default",
             title: "Please Try again later",
             description: "internal server error at " + new Date().toISOString(),
@@ -59,7 +86,7 @@ const SignInForm = () => {
         }
       }
     } catch (error) {
-      toast({
+      return toast({
         variant: "default",
         title: "Please Try again later",
         description: "internal server error at " + new Date().toISOString(),
@@ -126,7 +153,12 @@ const SignInForm = () => {
                 </div>
                 <Button variant={"link"}>Forget password</Button>
               </div>
-
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                size="invisible"
+                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                hidden
+              />
               <Button
                 type="submit"
                 className="mt-5 p-6 font-extrabold"

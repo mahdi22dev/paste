@@ -18,14 +18,23 @@ export class AuthService {
     private readonly usersService: UsersService,
   ) {}
 
-  async signIn(FindUserDto: FindUserDto, response: Response) {
+  async signIn(FindUserDto: FindUserDto, response: Response, request: Request) {
     try {
+      // check bots
+      const bot = await this.validateCaptcha(request);
+      if (!bot) {
+        throw new ServiceUnavailableException("Couldn't complete the request");
+      }
+
+      // get user fromdb
       const user = await this.usersService.findOne(FindUserDto);
       if (!user) {
         throw new NotFoundException(
           'This email address not associated with any user.',
         );
       }
+
+      // check passwords
       const isPasswordCorrect = await compareHashes(
         FindUserDto.password,
         user.password,
@@ -33,14 +42,16 @@ export class AuthService {
       if (!isPasswordCorrect) {
         throw new UnauthorizedException('You enetred wrong password.');
       }
-      const payload = { id: user.id, user: user.username, email: user.email };
 
+      // jwt
+      const payload = { id: user.id, user: user.username, email: user.email };
       const token = {
         access_token: await this.jwtService.signAsync(payload, {
           expiresIn: '30d',
         }),
       };
 
+      // send token
       if (token.access_token) {
         response.cookie('pastenest_access_token', token.access_token);
         return token;
@@ -48,9 +59,33 @@ export class AuthService {
         throw new ServiceUnavailableException("Couldn't autherize user");
       }
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }
+
+  async validateCaptcha(request: Request) {
+    try {
+      const recaptchaToken = request.header('X-Recaptcha-Token');
+      const secretKey = process.env.CAPTCHA_SECRET_KEY;
+      const capatchaValidation = await fetch(
+        `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaToken}`,
+        {
+          method: 'POST',
+        },
+      );
+
+      const bot = (await capatchaValidation.json()) as {
+        success: boolean;
+        score: number;
+        hostname: string;
+      };
+      return recaptchaToken && bot.success && bot.score > 0.5;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async signUp(createAuthDto: CreateAuthDto, response: Response) {
     const user = await this.usersService.create(createAuthDto);
     if (!user) {
@@ -69,6 +104,7 @@ export class AuthService {
       throw new ServiceUnavailableException("Couldn't autherize the user");
     }
   }
+
   async verify(request: Request) {
     try {
       const auth_token = request.cookies.pastenest_access_token;
