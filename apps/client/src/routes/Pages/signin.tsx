@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRef, useState } from "react";
 import { Formik, useField, Form } from "formik";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { signInSchema } from "@/lib/validation";
 import { PulseLoader } from "react-spinners";
 import { toast } from "@/hooks/use-toast";
@@ -25,6 +25,7 @@ const SignInForm = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const recaptchaRef: any = useRef();
+  let [searchParams, _] = useSearchParams();
 
   const onSubmitWithReCAPTCHA = async (): Promise<string | null> => {
     if (recaptchaRef.current) {
@@ -36,6 +37,7 @@ const SignInForm = () => {
 
   const handleSignin = async (values: any) => {
     try {
+      let next = searchParams.get("next");
       const captchaToken = await onSubmitWithReCAPTCHA();
       if (!captchaToken) {
         return toast({
@@ -44,8 +46,10 @@ const SignInForm = () => {
           description: "internal server error at " + new Date().toISOString(),
         });
       }
+
       localStorage.setItem("remember_me", "true");
       setMessage("");
+
       const response = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -74,7 +78,7 @@ const SignInForm = () => {
       if (token?.access_token) {
         try {
           localStorage.setItem("auth_token", token.access_token);
-          return navigate("/user/posts");
+          return navigate(next ? next : "/");
         } catch (error) {
           return toast({
             variant: "default",

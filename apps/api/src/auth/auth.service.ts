@@ -80,6 +80,7 @@ export class AuthService {
         score: number;
         hostname: string;
       };
+
       return recaptchaToken && bot.success && bot.score > 0.5;
     } catch (error) {
       return false;

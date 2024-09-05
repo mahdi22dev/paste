@@ -18,6 +18,10 @@ const PrivateRoutes = () => {
     );
   }
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/auth/signin" />;
+  return isAuthenticated ? (
+    <Outlet />
+  ) : (
+    <Navigate to={"/auth/signin?next=" + location.pathname} />
+  );
 };
 export default PrivateRoutes;
