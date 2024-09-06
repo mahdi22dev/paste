@@ -27,7 +27,6 @@ export function PasteForm() {
   useEffect(() => {
     async function loadLanguage() {
       let languageExtension: Extension;
-
       switch (syntax) {
         case "javascript":
           languageExtension = (
@@ -82,8 +81,6 @@ export function PasteForm() {
         }}
         validationSchema={() => pasteSchema(mode == "password")}
         onSubmit={async (values, {}) => {
-          console.log(values);
-
           const pasteBody = {
             ...values,
             date: date,
