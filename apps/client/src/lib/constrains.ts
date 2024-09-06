@@ -4,9 +4,9 @@ export const syntaxSelectOptions = [
   { value: "javascript", label: "JavaScript" },
   { value: "python", label: "Python" },
   { value: "java", label: "Java" },
-  { value: "csharp", label: "C#" },
+  // { value: "csharp", label: "C#" },
   { value: "php", label: "PHP" },
-  { value: "ruby", label: "Ruby" },
+  // { value: "ruby", label: "Ruby" },
   { value: "html", label: "HTML" },
   { value: "css", label: "CSS" },
 ];

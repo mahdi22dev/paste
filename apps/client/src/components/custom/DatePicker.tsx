@@ -11,9 +11,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function DatePicker() {
-  const [date, setDate] = React.useState<Date>();
-
+export function DatePicker({
+  date,
+  setDate,
+}: {
+  date: Date | undefined;
+  setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+}) {
   return (
     <Popover>
       <PopoverTrigger asChild className="">
@@ -26,9 +30,9 @@ export function DatePicker() {
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? (
-            `Experation Date : ${format(date, "PPP")}`
+            `Chose Experation Date : ${format(date, "PPP")}`
           ) : (
-            <span>Experation Date</span>
+            <span>Chose Experation Date</span>
           )}
         </Button>
       </PopoverTrigger>

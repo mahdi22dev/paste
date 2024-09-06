@@ -8,6 +8,16 @@ export const signInSchema = Yup.object({
     .max(20, "Must be 20 characters or less")
     .required("Required field"),
 });
+export const pasteSchema = (password: boolean) => {
+  return Yup.object({
+    title: Yup.string().max(20, "Must be 20 characters or less"),
+    password: password
+      ? Yup.string()
+          .max(20, "Must be 20 characters or less")
+          .required("Required field")
+      : Yup.string().max(20, "Must be 20 characters or less"),
+  });
+};
 
 export const signUpSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required field"),

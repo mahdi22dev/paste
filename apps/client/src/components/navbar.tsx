@@ -106,7 +106,7 @@ const DesktopNavbar = ({
       <ul className="flex justify-between items-center gap-5">
         <SingleLink path="/" name="Create Paste" />{" "}
         <SingleLink path="/user/posts" name="Top Pasts" />
-        <SingleLink path="/about" name="About" />
+        <SingleLink path="/about" name="Account" />
         <AuthComponent isAuthenticated={isAuthenticated} logOut={logOut} />
         <div className="flex gap-5 justify-between items-center">
           <ModeToggle />
