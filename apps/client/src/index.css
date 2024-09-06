@@ -1,15 +1,15 @@
-@import url("https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Merienda:wght@300..900&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Merienda:wght@300..900&display=swap"); */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.font {
+/* .font {
   font-family: "Noto Serif Gujarati", serif;
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
-}
+} */
 
 @layer base {
   :root {

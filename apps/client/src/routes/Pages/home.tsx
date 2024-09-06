@@ -1,10 +1,11 @@
-import { Button } from "@/components/ui/button";
+import { PasteForm } from "@/components/paste-form";
 
 function Home() {
   return (
-    <>
-      <Button>Button</Button>
-    </>
+    <div className="w-full h-full">
+      {" "}
+      <PasteForm />
+    </div>
   );
 }
 

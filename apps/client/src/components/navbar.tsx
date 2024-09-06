@@ -104,8 +104,8 @@ const DesktopNavbar = ({
     <div className="hidden md:flex py-3 justify-between items-center px-5 max-w-7xl mx-auto border-b border-gray-700">
       <div>loogo</div>
       <ul className="flex justify-between items-center gap-5">
-        <SingleLink path="/" name="Home" />{" "}
-        <SingleLink path="/user/posts" name="Posts" />
+        <SingleLink path="/" name="Create Paste" />{" "}
+        <SingleLink path="/user/posts" name="Top Pasts" />
         <SingleLink path="/about" name="About" />
         <AuthComponent isAuthenticated={isAuthenticated} logOut={logOut} />
         <div className="flex gap-5 justify-between items-center">
