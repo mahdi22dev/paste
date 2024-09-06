@@ -10,7 +10,7 @@ interface User {
 interface AuthContextType {
   isAuthenticated: boolean;
   protectedloading: boolean;
-  logout: () => void;
+  // logout: () => void;
   verfiyToken: () => Promise<User | undefined>;
 }
 
@@ -36,14 +36,9 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
     }
   };
 
-  const logout = () => {
-    // try to remove cookies
-    // setToken(null);
-  };
-
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, protectedloading, logout, verfiyToken }}
+      value={{ isAuthenticated, protectedloading, verfiyToken }}
     >
       {children}
     </AuthContext.Provider>
