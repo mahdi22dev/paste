@@ -54,12 +54,12 @@ export class AuthService {
       // send token
       if (token.access_token) {
         response.cookie('pastenest_access_token', token.access_token);
+        request['user'] = payload;
         return token;
       } else {
         throw new ServiceUnavailableException("Couldn't autherize user");
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -109,6 +109,7 @@ export class AuthService {
     };
     if (token.access_token) {
       response.cookie('pastenest_access_token', token.access_token);
+
       return token;
     } else {
       throw new ServiceUnavailableException("Couldn't autherize the user");

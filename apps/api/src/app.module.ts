@@ -5,7 +5,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { PastsModule } from './pasts/pasts.module';
+import { PasteModule } from './paste/paste.module';
+import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { PastsModule } from './pasts/pasts.module';
     }),
     UsersModule,
     AuthModule,
-    PastsModule,
+    PasteModule,
   ],
   controllers: [AppController],
   providers: [AppService],

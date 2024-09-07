@@ -1,7 +1,5 @@
-import { Controller, Get, UseGuards, UseInterceptors } from '@nestjs/common';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { Controller, Get } from '@nestjs/common';
 
-@UseGuards(AuthGuard)
 @Controller('users')
 export class UsersController {
   @Get('posts')

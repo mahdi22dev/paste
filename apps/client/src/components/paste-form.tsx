@@ -15,6 +15,7 @@ import { Formik, useField, Form } from "formik";
 import { pasteSchema } from "@/lib/validation";
 import { toast } from "@/hooks/use-toast";
 import CodeMirror, { Extension } from "@uiw/react-codemirror";
+import { PasteBody } from "@/lib/types";
 
 export function PasteForm() {
   const [syntax, setSyntax] = useState("syntax");
@@ -23,6 +24,19 @@ export function PasteForm() {
   const [experation, setExperation] = useState("1");
   const [content, setContent] = useState("");
   const [extensions, setExtensions] = useState<Extension[]>();
+
+  const handlePostCreation = async (body: PasteBody) => {
+    try {
+      const response = await fetch("/api/paste", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      console.log(await response.json());
+    } catch (error) {}
+  };
 
   useEffect(() => {
     async function loadLanguage() {
@@ -78,19 +92,24 @@ export function PasteForm() {
         initialValues={{
           title: "Untitled Paste",
           date: undefined,
+          password: "",
         }}
-        validationSchema={() => pasteSchema(mode == "password")}
+        validationSchema={() => pasteSchema(mode === "password")}
         onSubmit={async (values, {}) => {
+          console.log(values);
+
+          const zeroExperation = new Date(0);
           const pasteBody = {
             ...values,
-            date: date,
+            date: date == undefined ? zeroExperation : date,
             syntax: syntax,
             mode: mode,
-            content,
+            content: content,
           };
+          console.log(pasteBody);
 
           const currentdate = new Date();
-          if (pasteBody.date && pasteBody.date < currentdate) {
+          if (pasteBody.date && date && date < currentdate) {
             return toast({
               variant: "default",
               title: "Please make sure the date is in the feature",
@@ -102,8 +121,8 @@ export function PasteForm() {
               title: "Can't create empty paste",
             });
           }
-          // await handleSubmit();
-          // await handleSignin(values);
+          // @ts-ignore
+          await handlePostCreation(pasteBody);
         }}
       >
         {({ isSubmitting }) => (

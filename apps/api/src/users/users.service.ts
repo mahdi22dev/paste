@@ -15,9 +15,11 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
+      console.log(createUserDto);
+
       return await this.prisma.user.create({
         data: {
-          email: Math.random() + createUserDto.email,
+          email: createUserDto.email,
           username: createUserDto.username,
           password: await hashPassword(createUserDto.password),
           createdAt: new Date().toISOString(),

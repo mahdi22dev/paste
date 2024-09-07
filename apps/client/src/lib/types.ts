@@ -10,3 +10,11 @@ export interface Message {
   error: string;
   statusCode: number;
 }
+
+export interface PasteBody {
+  date: Date | undefined;
+  syntax: string;
+  mode: string;
+  content: string;
+  title: string;
+}
