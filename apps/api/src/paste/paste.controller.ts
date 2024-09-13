@@ -30,24 +30,4 @@ export class PasteController {
   ) {
     return this.pasteService.create(createPasteDto, request);
   }
-
-  @Get()
-  findAll() {
-    return this.pasteService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pasteService.findOne(+id);
-  }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updatePasteDto: UpdatePasteDto) {
-  //   return this.pasteService.update(+id, updatePasteDto);
-  // }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pasteService.remove(+id);
-  }
 }

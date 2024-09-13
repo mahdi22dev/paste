@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,6 +16,8 @@ import { pasteSchema } from "@/lib/validation";
 import { toast } from "@/hooks/use-toast";
 import CodeMirror, { Extension } from "@uiw/react-codemirror";
 import { PasteBody } from "@/lib/types";
+import { PulseLoader } from "react-spinners";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export function PasteForm() {
   const [syntax, setSyntax] = useState("syntax");
@@ -24,6 +26,9 @@ export function PasteForm() {
   const [experation, setExperation] = useState("1");
   const [content, setContent] = useState("");
   const [extensions, setExtensions] = useState<Extension[]>();
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const handlePostCreation = async (body: PasteBody) => {
     try {
@@ -35,7 +40,9 @@ export function PasteForm() {
         body: JSON.stringify(body),
       });
       console.log(await response.json());
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -83,6 +90,10 @@ export function PasteForm() {
     setContent(value);
   }, []);
 
+  const onRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+  };
+
   return (
     <>
       <h1 className="text-2xl font-bold mb-4 text-center">
@@ -90,14 +101,12 @@ export function PasteForm() {
       </h1>
       <Formik
         initialValues={{
-          title: "Untitled Paste",
+          title: "",
           date: undefined,
           password: "",
         }}
         validationSchema={() => pasteSchema(mode === "password")}
-        onSubmit={async (values, {}) => {
-          console.log(values);
-
+        onSubmit={async (values, { setSubmitting }) => {
           const zeroExperation = new Date(0);
           const pasteBody = {
             ...values,
@@ -105,42 +114,69 @@ export function PasteForm() {
             syntax: syntax,
             mode: mode,
             content: content,
+            recaptchaToken: recaptchaToken,
           };
-          console.log(pasteBody);
 
+          if (!recaptchaToken) {
+            return toast({
+              variant: "default",
+              title: "Please complete capatcha first",
+            });
+          }
           const currentdate = new Date();
           if (pasteBody.date && date && date < currentdate) {
             return toast({
               variant: "default",
-              title: "Please make sure the date is in the feature",
+              title: "Please make sure the date is in the future",
             });
           }
+
           if (content === "") {
             return toast({
               variant: "default",
               title: "Can't create empty paste",
             });
           }
-          // @ts-ignore
+
+          // Make sure CAPTCHA is solved before submission
+          if (!recaptchaToken) {
+            return toast({
+              variant: "default",
+              title: "Please complete the CAPTCHA",
+            });
+          }
+
           await handlePostCreation(pasteBody);
+          setSubmitting(false); // Stop form submission loading
         }}
       >
         {({ isSubmitting }) => (
-          <Form className="min-h-[80vh] max-w-[80vw] mx-auto flex gap-3 items-start justify-between p-4">
+          <Form className="min-h-[80vh] max-w-[80vw] mx-auto flex flex-col-reverse xl:flex-row gap-5 xl:gap-3 xl:items-start xl:justify-between p-4">
             <div className="w-full h-full">
               <div className="space-y-2 flex-grow flex flex-col mb-4">
                 <CodeMirror
                   height="600px"
-                  theme="dark"
-                  extensions={syntax == "plain" ? undefined : extensions}
+                  theme={"dark"}
+                  extensions={syntax === "plain" ? undefined : extensions}
+                  readOnly={isSubmitting}
                   onChange={onChange}
                   lang="en"
                   className="z-0"
                 />
               </div>
-
-              <Button type="submit" className="w-full">
-                Create Paste
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={import.meta.env.VITE_RECAPTCHA_BOX_SITE_KEY}
+                onChange={onRecaptchaChange}
+                size="normal"
+                className="my-5"
+              />
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <PulseLoader color="#1f0620" size={10} />
+                ) : (
+                  "Create Paste"
+                )}
               </Button>
             </div>
             <div>
@@ -162,11 +198,11 @@ export function PasteForm() {
                     <SelectValue placeholder="Select syntax" />
                   </SelectTrigger>
                   <SelectContent>
-                    {syntaxSelectOptions.map((syntax) => [
-                      <SelectItem value={syntax.value}>
+                    {syntaxSelectOptions.map((syntax) => (
+                      <SelectItem key={syntax.value} value={syntax.value}>
                         {syntax.label}
-                      </SelectItem>,
-                    ])}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -207,8 +243,8 @@ export function PasteForm() {
                     <SelectValue placeholder="No experation" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">No experation</SelectItem>
-                    <SelectItem value="2">Chose an experation date</SelectItem>
+                    <SelectItem value="1">No expiration</SelectItem>
+                    <SelectItem value="2">Choose an expiration date</SelectItem>
                   </SelectContent>
                 </Select>
               )}

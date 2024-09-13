@@ -11,6 +11,7 @@ export function ModeToggle() {
   useEffect(() => {
     setUsertheme(theme ? theme : "dark");
   }, [theme]);
+
   return (
     <div className="bg-transparent p-2 rounded-md cursor-pointer transition-all duration-300 ease-in-out hover:bg-black/15">
       {usertheme == "dark" ? (

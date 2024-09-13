@@ -7,6 +7,7 @@ export const CreatePasteSchema = z
     date: z.string().optional().nullable(),
     mode: z.enum(['public', 'private', 'password']),
     password: z.string().optional().nullable(),
+    recaptchaToken: z.string(),
   })
   .required()
   .refine(

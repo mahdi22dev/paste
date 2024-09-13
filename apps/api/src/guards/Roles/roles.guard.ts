@@ -23,7 +23,6 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     if (Roles.includes(Role.Guest)) {
-      console.log(Roles);
       const auth_token = request.cookies.pastenest_access_token;
       if (!auth_token) {
         return true;

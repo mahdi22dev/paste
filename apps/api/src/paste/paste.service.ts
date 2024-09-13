@@ -13,7 +13,17 @@ import { Request } from 'express';
 export class PasteService {
   constructor(private prisma: PrismaService) {}
   async create(createPasteDto: CreatePasteDto, request: Request) {
+    console.log(createPasteDto);
+
     try {
+      // check v3 captcha
+      const bot = await this.validateCaptcha(createPasteDto);
+      console.log(bot);
+
+      if (!bot) {
+        throw new ServiceUnavailableException("Couldn't complete the request");
+      }
+
       // check experation date
       const user = request.user as {
         id: number;
@@ -29,12 +39,6 @@ export class PasteService {
       // check if content is empty
       if (createPasteDto.content === '') {
         throw new BadRequestException("paste content can't be empty");
-      }
-
-      // check v3 captcha
-      const bot = true;
-      if (!bot) {
-        throw new ServiceUnavailableException("Couldn't complete the request");
       }
 
       try {
@@ -59,19 +63,26 @@ export class PasteService {
     }
   }
 
-  findAll() {
-    return `This action returns all paste`;
-  }
+  async validateCaptcha(createPasteDto: CreatePasteDto) {
+    try {
+      const secretKey = process.env.CAPTCHA_BOX_SECRET_KEY;
+      const capatchaValidation = await fetch(
+        `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${createPasteDto.recaptchaToken}`,
+        {
+          method: 'POST',
+        },
+      );
 
-  findOne(id: number) {
-    return `This action returns a #${id} paste`;
-  }
+      const bot = (await capatchaValidation.json()) as {
+        success: boolean;
+        score: number;
+        hostname: string;
+      };
+      console.log(bot);
 
-  // update(id: number, updatePasteDto: UpdatePasteDto) {
-  //   return `This action updates a #${id} paste`;
-  // }
-
-  remove(id: number) {
-    return `This action removes a #${id} paste`;
+      return createPasteDto.recaptchaToken && bot.success;
+    } catch (error) {
+      return false;
+    }
   }
 }
