@@ -17,6 +17,7 @@ function Post() {
       // @ts-expect-error
       setData(post);
     } catch (error) {
+      setError(true);
     } finally {
       setloading(false);
     }
