@@ -7,6 +7,7 @@ import SignUp from "./Pages/signup";
 import PrivateRoutes from "./PrivateRoutes";
 import Posts from "./Pages/posts";
 import RedirectFromAuth from "./RedirectFromAuth";
+import Post from "@/routes/Pages/post";
 
 const routers = createBrowserRouter([
   {
@@ -18,6 +19,11 @@ const routers = createBrowserRouter([
         path: "/",
         index: true,
         element: <Home />,
+      },
+      {
+        path: "/:postId",
+
+        element: <Post />,
       },
       {
         path: "/home",
@@ -32,7 +38,7 @@ const routers = createBrowserRouter([
             element: <Posts />,
           },
           {
-            path: "/user/private/post",
+            path: "/user/post",
             element: <Posts />,
           },
         ],

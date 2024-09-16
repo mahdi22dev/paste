@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { CreatePasteDto } from './dto/create-paste.dto';
@@ -8,13 +9,12 @@ import { PrismaService } from 'src/prisma.service';
 import { Mode } from '@prisma/client';
 import { hashPassword } from 'src/lib/utils';
 import { Request } from 'express';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class PasteService {
   constructor(private prisma: PrismaService) {}
   async create(createPasteDto: CreatePasteDto, request: Request) {
-    console.log(createPasteDto);
-
     try {
       // check v3 captcha
       const bot = await this.validateCaptcha(createPasteDto);
@@ -40,29 +40,37 @@ export class PasteService {
       if (createPasteDto.content === '') {
         throw new BadRequestException("paste content can't be empty");
       }
-
-      try {
-        return await this.prisma.paste.create({
-          data: {
-            authorId: user?.id || null,
-            title: createPasteDto.title,
-            content: createPasteDto.content,
-            mode: Mode[createPasteDto.mode.toUpperCase()],
-            experation: createPasteDto.date?.toString(),
-            password:
-              (createPasteDto.password &&
-                (await hashPassword(createPasteDto.password))) ||
-              null,
-          },
-        });
-      } catch (error) {
-        console.log(error);
-      }
+      return await this.prisma.paste.create({
+        data: {
+          authorId: user?.id || null,
+          title: createPasteDto.title,
+          content: createPasteDto.content,
+          mode: Mode[createPasteDto.mode.toUpperCase()],
+          experation: createPasteDto.date?.toString(),
+          password:
+            (createPasteDto.password &&
+              (await hashPassword(createPasteDto.password))) ||
+            null,
+        },
+      });
     } catch (error) {
       throw error;
     }
   }
 
+  async findOne(params: { id: number }) {
+    try {
+      const paste = await this.prisma.paste.findUnique({
+        where: { id: Number(params?.id) },
+      });
+      if (!paste) {
+        throw new NotFoundException('Requested resources not found');
+      }
+      return paste;
+    } catch (error) {
+      throw error;
+    }
+  }
   async validateCaptcha(createPasteDto: CreatePasteDto) {
     try {
       const secretKey = process.env.CAPTCHA_BOX_SECRET_KEY;

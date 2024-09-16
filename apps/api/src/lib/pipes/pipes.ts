@@ -17,3 +17,14 @@ export class ZodValidationPipe implements PipeTransform {
     }
   }
 }
+export class ToNumber implements PipeTransform {
+  transform(value: unknown, metadata: ArgumentMetadata) {
+    try {
+      const parsedValue = Number(value);
+      return parsedValue;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Data Validation failed');
+    }
+  }
+}

@@ -45,14 +45,7 @@ export class UsersService {
       });
       return user;
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === 'P2001') {
-          throw new NotFoundException('Requested resources not found');
-        }
-      } else {
-        throw error;
-      }
+      throw error;
     }
-    return null;
   }
 }
