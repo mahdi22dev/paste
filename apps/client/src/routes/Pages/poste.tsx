@@ -21,18 +21,30 @@ function Past() {
   const params = useParams();
   const [extensions, setExtensions] = useState<Extension[]>();
   const [loading, setloading] = useState(true);
+  const [btnLoading, setBtnloading] = useState(false);
   const [error, setError] = useState(false);
   const [locked, setLocked] = useState(false);
-  const [password, setPassword] = useState<string | null>("sss11");
+  const [password, setPassword] = useState<string | null>("");
   const [data, setData] = useState<Paste & { unlocked: boolean }>();
 
-  const handleUnlock = async () => {};
+  const handleUnlock = async () => {
+    try {
+      setBtnloading(true);
+      await fetchData();
+    } catch (error) {
+    } finally {
+      setBtnloading(false);
+    }
+  };
   const fetchData = async () => {
     try {
       setloading(true);
       const paste = await getPasteAction(params, password);
       if (paste?.mode == "PASSWORD" && paste.unlocked === false) {
         setLocked(true);
+      }
+      if (paste?.unlocked) {
+        setLocked(false);
       }
       if (!paste) {
         setError(true);
