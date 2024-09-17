@@ -18,6 +18,7 @@ import CodeMirror, { Extension } from "@uiw/react-codemirror";
 import { PasteBody } from "@/lib/types";
 import { PulseLoader } from "react-spinners";
 import ReCAPTCHA from "react-google-recaptcha";
+import { useNavigate } from "react-router-dom";
 
 export function PasteForm() {
   const [syntax, setSyntax] = useState("syntax");
@@ -27,7 +28,7 @@ export function PasteForm() {
   const [content, setContent] = useState("");
   const [extensions, setExtensions] = useState<Extension[]>();
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const handlePostCreation = async (body: PasteBody) => {
@@ -39,7 +40,21 @@ export function PasteForm() {
         },
         body: JSON.stringify(body),
       });
-      console.log(await response.json());
+      const data = (await response.json()) as {
+        id: number;
+        pasteId: string;
+        title: string;
+        content: string;
+        createdAt: string;
+        experation: any;
+        mode: string;
+        password: any;
+        authorId: number;
+      };
+
+      if (data?.pasteId) {
+        return navigate("/" + data.pasteId);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -117,12 +132,12 @@ export function PasteForm() {
             recaptchaToken: recaptchaToken,
           };
 
-          if (!recaptchaToken) {
-            return toast({
-              variant: "default",
-              title: "Please complete capatcha first",
-            });
-          }
+          // if (!recaptchaToken) {
+          //   return toast({
+          //     variant: "default",
+          //     title: "Please complete the CAPTCHA",
+          //   });
+          // }
           const currentdate = new Date();
           if (pasteBody.date && date && date < currentdate) {
             return toast({
@@ -135,14 +150,6 @@ export function PasteForm() {
             return toast({
               variant: "default",
               title: "Can't create empty paste",
-            });
-          }
-
-          // Make sure CAPTCHA is solved before submission
-          if (!recaptchaToken) {
-            return toast({
-              variant: "default",
-              title: "Please complete the CAPTCHA",
             });
           }
 
@@ -164,13 +171,13 @@ export function PasteForm() {
                   className="z-0"
                 />
               </div>
-              <ReCAPTCHA
+              {/* <ReCAPTCHA
                 ref={recaptchaRef}
                 sitekey={import.meta.env.VITE_RECAPTCHA_BOX_SITE_KEY}
                 onChange={onRecaptchaChange}
                 size="normal"
                 className="my-5"
-              />
+              /> */}
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <PulseLoader color="#1f0620" size={10} />

@@ -7,7 +7,7 @@ import SignUp from "./Pages/signup";
 import PrivateRoutes from "./PrivateRoutes";
 import Posts from "./Pages/posts";
 import RedirectFromAuth from "./RedirectFromAuth";
-import Post from "@/routes/Pages/post";
+import Paste from "@/routes/Pages/poste";
 
 const routers = createBrowserRouter([
   {
@@ -21,9 +21,8 @@ const routers = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/:postId",
-
-        element: <Post />,
+        path: "/:pastId",
+        element: <Paste />,
       },
       {
         path: "/home",

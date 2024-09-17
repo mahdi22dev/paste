@@ -16,7 +16,7 @@ enum Role {
 model User {
   id        Int       @id @default(autoincrement())
   email     String    @unique
-  username  String
+  username  String    @unique
   password  String
   createdAt DateTime? @default(now())
   posts     Paste[]
@@ -32,9 +32,11 @@ enum Mode {
 
 model Paste {
   id         Int       @id @default(autoincrement())
+  pasteId    String    @unique
   title      String
   content    String?
   createdAt  DateTime? @default(now())
+  syntax     String
   experation String?
   mode       Mode
   password   String?

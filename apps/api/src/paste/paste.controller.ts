@@ -4,13 +4,12 @@ import {
   Post,
   Body,
   Param,
-  Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { PasteService } from './paste.service';
-import { CreatePasteDto, CreatePasteSchema } from './dto/create-paste.dto';
-import { ToNumber, ZodValidationPipe } from 'src/lib/pipes/pipes';
+import { CreatePasteDto } from './dto/create-paste.dto';
 import { RolesGuard } from 'src/guards/Roles/roles.guard';
 import { Roles } from 'src/guards/Roles/roles.decorator';
 import { Role } from 'src/guards/Roles/roles.enum';
@@ -24,7 +23,7 @@ export class PasteController {
   @UseGuards(RolesGuard)
   @Post()
   create(
-    @Body(new ZodValidationPipe(CreatePasteSchema))
+    @Body() // new ZodValidationPipe(CreatePasteSchema)
     createPasteDto: CreatePasteDto,
     @Req() request: Request,
   ) {
@@ -34,12 +33,7 @@ export class PasteController {
   @Roles(Role.Guest)
   @UseGuards(RolesGuard)
   @Get(':id')
-  findOne(
-    @Param()
-    params: {
-      id: number;
-    },
-  ) {
-    return this.pasteService.findOne(params);
+  findOne(@Param('id') id: string, @Query('password') password: string) {
+    return this.pasteService.findOne(id, password);
   }
 }

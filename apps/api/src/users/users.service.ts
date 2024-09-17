@@ -26,7 +26,9 @@ export class UsersService {
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new ConflictException('User with email already exists.');
+          throw new ConflictException(
+            'User with email or username already exists.',
+          );
         }
         if (error.code === 'P2001') {
           throw new NotFoundException('Requested resources not found');
